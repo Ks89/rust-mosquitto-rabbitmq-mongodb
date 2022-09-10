@@ -1,4 +1,4 @@
-use std::{process, thread, time::Duration};
+use std::{process, time::Duration};
 use std::string::ToString;
 
 use futures::{executor::block_on, stream::StreamExt};
@@ -91,7 +91,7 @@ async fn main() {
                     }
                     Err(err) => {
                         eprintln!("cannot read payload as utf8. Error = {}", err);
-                        continue;
+                        ""
                     }
                 };
 

@@ -1,19 +1,22 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::{Temperature, Topic};
-use crate::models::payload_trait::{Humidity, PayloadTrait};
-use crate::types::Float;
+use crate::{Topic};
+use crate::models::payload_trait::{PayloadTrait};
 
+// input message from RabbitMQ
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GenericMessage {
     pub uuid: String,
     pub profile_token: String,
     pub topic: Topic,
+    // payload is variable, because it can be PayloadTrait (Temperature, Humidity...)
+    // so I need to parse something that cannot be expressed with a fixed struct
     pub payload: Value,
 }
 
+// Message processed using GenericMessage as input
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Message<T> where T: PayloadTrait + Sized + Serialize {
@@ -31,17 +34,5 @@ impl<T> Message<T> where T: PayloadTrait + Sized + Serialize {
             topic,
             payload,
         }
-    }
-
-    pub fn new_as_json(uuid: String, profile_token: String, topic: Topic, payload: T) -> String {
-        // println!("Notification deserialized from JSON = {:?}", &val);
-        let message = Self::new(
-            uuid,
-            profile_token,
-            topic,
-            payload,
-        );
-        // println!("message {:?}", &queue_message);
-        serde_json::to_string(&message).unwrap()
     }
 }
