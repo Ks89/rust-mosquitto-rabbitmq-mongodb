@@ -1,7 +1,7 @@
 use std::{process, time::Duration};
 use std::string::ToString;
 
-use futures::{executor::block_on, stream::StreamExt};
+use futures::{executor::block_on, stream::StreamExt, TryFutureExt};
 use paho_mqtt as mqtt;
 use lapin::Channel;
 
@@ -12,14 +12,20 @@ use crate::models::get_msq_byte;
 use crate::models::message::Message;
 use crate::models::notification::Notification;
 use crate::models::topic::Topic;
-use crate::amqp::{init, publish_message};
+use crate::amqp::{publish_message, create_connection, create_channel};
 
 
 #[tokio::main]
 async fn main() {
     println!("starting up");
     // AMQP (RABBIT MQ CONNECTION)
-    let channel: Channel = init().await;
+    let connection_res = create_connection().await;
+    let connection = connection_res.unwrap();
+    connection.on_error(|err| {
+        println!("Connection error = {:?}", err);
+    });
+
+    let channel = create_channel(&connection).await;
 
     // ************************************************************************
     // ******************************** MQTT **********************************
