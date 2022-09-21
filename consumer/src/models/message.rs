@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::{Topic};
+use crate::models::topic::{Topic};
 use crate::models::payload_trait::{PayloadTrait};
 
 // input message from RabbitMQ

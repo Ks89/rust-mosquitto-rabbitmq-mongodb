@@ -36,6 +36,7 @@ async fn main() {
     const TOPICS: &[&str] = &[
         "sensors/+/temperature",
         "sensors/+/humidity",
+        "sensors/+/light",
     ];
     let topics: Vec<String> = TOPICS.iter().map(|s| s.to_string()).collect();
 
@@ -72,7 +73,7 @@ async fn main() {
         mqtt_client.connect(conn_opts).await?;
 
         println!("Subscribing to topics: {:?}", topics);
-        const QOS: &[i32] = &[1, 1];
+        const QOS: &[i32] = &[1, 1, 1];
         mqtt_client.subscribe_many(&topics, QOS).await?;
 
         // Just loop on incoming messages.

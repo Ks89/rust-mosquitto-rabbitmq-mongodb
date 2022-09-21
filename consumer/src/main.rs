@@ -1,21 +1,23 @@
+use dotenv::dotenv;
 use futures_lite::StreamExt;
 use lapin::{Consumer};
 
-mod models;
-mod amqp;
-
-use crate::models::message::{GenericMessage, Message};
-use crate::models::payload_trait::{Humidity, Temperature};
-use crate::models::topic::Topic;
-use crate::amqp::{init, read_message};
-use crate::models::{new_humidity_message, new_temperature_message};
+use consumer::models::message::{GenericMessage, Message};
+use consumer::models::payload_trait::{Humidity, Light, Temperature};
+use consumer::amqp::{init, read_message};
+use consumer::db::{connect};
+use consumer::db::sensor::update_message;
+use consumer::models::{new_humidity_message, new_temperature_message, new_light_message};
 
 #[tokio::main]
 async fn main() {
     println!("starting up");
+    dotenv().ok();
 
     async_global_executor::block_on(async {
         let mut consumer: Consumer = init().await;
+
+        let db = connect().await.unwrap();
 
         while let Some(delivery) = consumer.next().await {
             if let Ok(delivery) = delivery {
@@ -26,12 +28,39 @@ async fn main() {
                     Ok(generic_msg) => {
                         println!("GenericMessage deserialized from JSON = {:?}", generic_msg);
 
-                        if generic_msg.payload.get("temperature").is_some() {
+                        if generic_msg.topic.feature == "temperature" {
                             let message: Message<Temperature> = new_temperature_message(generic_msg);
-                            println!("message temperature {:?}", message);
-                        } else if generic_msg.payload.get("humidity").is_some() {
+                            println!("message temperature {:?}", &message);
+                            match update_message(&db, message).await {
+                                Ok(_register_doc_id) => {
+                                    println!("update success {:?}", _register_doc_id);
+                                }
+                                Err(_error) => {
+                                    println!("{:?}", _error);
+                                }
+                            }
+                        } else if generic_msg.topic.feature == "humidity" {
                             let message: Message<Humidity> = new_humidity_message(generic_msg);
                             println!("message humidity {:?}", message);
+                            match update_message(&db, message).await {
+                                Ok(_register_doc_id) => {
+                                    println!("update success");
+                                }
+                                Err(_error) => {
+                                    println!("{:?}", _error);
+                                }
+                            }
+                        } else if generic_msg.topic.feature == "light" {
+                            let message: Message<Light> = new_light_message(generic_msg);
+                            println!("message light {:?}", message);
+                            match update_message(&db, message).await {
+                                Ok(_register_doc_id) => {
+                                    println!("update success");
+                                }
+                                Err(_error) => {
+                                    println!("{:?}", _error);
+                                }
+                            }
                         } else {
                             eprintln!("Cannot recognize Message payload type");
                         }

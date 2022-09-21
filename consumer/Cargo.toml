@@ -3,6 +3,20 @@ name = "rust-consumer"
 version = "1.0.0"
 edition = "2021"
 
+[[bin]]
+name = "consumer"
+path = "src/main.rs"
+
+[lib]
+name = "consumer"
+path = "src/lib.rs"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = 3
+panic = "abort"
+
 [dependencies]
 lapin = "2.1.1"
 log = "0.4.17"
@@ -11,6 +25,9 @@ async-global-executor = "^2.0"
 tokio = { version = "1.17.0", features = ["full"] }
 tokio-executor-trait = "2.1.0"
 tokio-reactor-trait = "1.1.0"
+mongodb = "2.1.0"
+dotenv = "0.15.0"
+futures = "0.3"
 
 # The core APIs, including the Serialize and Deserialize traits. Always
 # required when using Serde. The "derive" feature is only required when

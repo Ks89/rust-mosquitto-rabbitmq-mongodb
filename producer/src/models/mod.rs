@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{Message, Notification, Topic};
-use crate::models::payload_trait::{Humidity, PayloadTrait, Temperature};
+use crate::models::payload_trait::{Humidity, Light, PayloadTrait, Temperature};
 
 pub mod message;
 pub mod notification;
@@ -12,6 +12,7 @@ pub fn get_msq_byte(topic: &Topic, payload_str: &str) -> Vec<u8> {
     let msg_byte: Vec<u8> = match topic.feature.as_str() {
         "temperature" => message_payload_to_bytes::<Temperature>(payload_str, topic),
         "humidity" => message_payload_to_bytes::<Humidity>(payload_str, topic),
+        "light" => message_payload_to_bytes::<Light>(payload_str, topic),
         _ => vec![]
     };
     msg_byte
