@@ -18,7 +18,7 @@ pub fn new_temperature_message(val: GenericMessage) -> Message<Temperature> {
     };
     let message: Message<Temperature> = Message::new(
         val.uuid,
-        val.profile_token,
+        val.api_token,
         val.topic,
         payload,
     );
@@ -36,7 +36,7 @@ pub fn new_humidity_message(val: GenericMessage) -> Message<Humidity> {
     };
     let message: Message<Humidity> = Message::new(
         val.uuid,
-        val.profile_token,
+        val.api_token,
         val.topic,
         payload,
     );
@@ -55,7 +55,7 @@ pub fn new_light_message(val: GenericMessage) -> Message<Light> {
     };
     let message: Message<Light> = Message::new(
         val.uuid,
-        val.profile_token,
+        val.api_token,
         val.topic,
         payload,
     );

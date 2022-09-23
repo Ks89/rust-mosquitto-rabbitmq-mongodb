@@ -6,6 +6,6 @@ use crate::models::payload_trait::PayloadTrait;
 #[serde(rename_all = "camelCase")]
 pub struct Notification<T: PayloadTrait> {
     pub uuid: String,
-    pub profile_token: String,
+    pub api_token: String,
     pub payload: T,
 }

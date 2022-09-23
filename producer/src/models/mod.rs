@@ -29,7 +29,7 @@ fn message_payload_to_bytes<'a, T>(payload_str: &'a str, topic: &Topic) -> Vec<u
             // println!("Notification deserialized from JSON = {:?}", &val);
             let serialized = Message::<T>::new_as_json(
                 val.uuid.clone(),
-                val.profile_token.clone(),
+                val.api_token.clone(),
                 topic.clone(),
                 val.payload,
             );

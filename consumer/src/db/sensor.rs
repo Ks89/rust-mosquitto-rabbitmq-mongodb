@@ -23,7 +23,7 @@ pub async fn update_message<T: PayloadTrait + Sized + Serialize>(
         &collection,
         find_one_and_update_options,
         message.uuid,
-        message.profile_token,
+        message.api_token,
         message.payload.get_value(),
     ).await;
 

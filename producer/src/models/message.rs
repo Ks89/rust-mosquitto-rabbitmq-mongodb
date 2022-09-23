@@ -7,26 +7,26 @@ use crate::models::payload_trait::PayloadTrait;
 #[serde(rename_all = "camelCase")]
 pub struct Message<T> where T: PayloadTrait + Sized + Serialize {
     pub uuid: String,
-    pub profile_token: String,
+    pub api_token: String,
     pub topic: Topic,
     pub payload: T,
 }
 
 impl<T> Message<T> where T: PayloadTrait + Sized + Serialize {
-    pub fn new(uuid: String, profile_token: String, topic: Topic, payload: T) -> Message<T> {
+    pub fn new(uuid: String, api_token: String, topic: Topic, payload: T) -> Message<T> {
         Self {
             uuid,
-            profile_token,
+            api_token,
             topic,
             payload,
         }
     }
 
-    pub fn new_as_json(uuid: String, profile_token: String, topic: Topic, payload: T) -> String {
+    pub fn new_as_json(uuid: String, api_token: String, topic: Topic, payload: T) -> String {
         // println!("Notification deserialized from JSON = {:?}", &val);
         let message = Self::new(
             uuid,
-            profile_token,
+            api_token,
             topic,
             payload,
         );

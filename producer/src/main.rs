@@ -105,6 +105,7 @@ async fn main() {
                 let msg_byte: Vec<u8> = get_msq_byte(&topic, payload_str);
                 if !msg_byte.is_empty() {
                     // send to RabbitMQ
+                    println!("Sending message to RabbitMQ");
                     publish_message(&channel, msg_byte).await;
                 }
             } else {
